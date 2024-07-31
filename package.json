@@ -1,0 +1,17 @@
+{
+  "name": "anti-trackist-action",
+  "version": "0.0.1",
+  "description": "A Discord bot that cleans up URLs posted in Discord messages.",
+  "main": "index.js",
+  "dependencies": {
+    "discord.js": "^14.15.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ken C (boymeetsmini)",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.5.4"
+  }
+}
