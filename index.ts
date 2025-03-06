@@ -21,14 +21,19 @@ async function whitelistMatches(domain: string): Promise<string[]> {
 }
 
 // Function to clean URLs by removing tracking parameters
-function cleanUrl(url: string): string {
+async function cleanUrl(url: string): Promise<string> {
+    // extract domain from URL to find whitelisted params (filter out 'www')
     const parsedUrl = new URL(url);
+    const parsedDomain: string = parsedUrl.hostname.split('.').filter((x) => x !== 'www')[0];
+
+    // Find all whitelisted params for given URL's domain
+    const parsedWl = await whitelistMatches(parsedDomain);
 
     // Remove tracking parameters (e.g., utm_*)
     const searchParams = new URLSearchParams(parsedUrl.search);
     for (const key of searchParams.keys()) {
-        // TODO create whitelist of parameters for certain domains (i.e. youtube, X, bsky, etc.)
-        if (key === 'utm_') {
+        // delete any keys not in the whitelist for specified domain
+        if (parsedWl.indexOf(key) === -1) {
             searchParams.delete(key);
         }
     }
@@ -59,17 +64,14 @@ client.on('messageCreate', async (message: Message) => {
 
     // Find URLs in the message using a regex
     const urlRegex = /https?:\/\/[^\s]+/g;
-    const urls = message.content.match(urlRegex);
+    const urls: string[] | null = message.content.match(urlRegex);
+    if (urls && urls.length === 0) return;
 
-    if (urls && urls.length > 0) {
-        // Clean the URLs
-        const cleanedUrls = urls.map((url) => cleanUrl(url));
-
-        // Reply with the cleaned URLs
-        // await message.reply(`Cleaned URLs:\n${cleanedUrls.join('\n')}`);
-
-        // TODO reconstruct the message with cleaned URLs
-    }
+    // Clean the URLs
+    const cleanedUrls = urls?.map(async (url) => await cleanUrl(url));
+    const newMessage: string = message.content.replace(urlRegex, '[url-$n]');
+    // TODO replace URL placeholders
+    // TODO send reconstructed message
 });
 
 // Log in to Discord with your bot token
