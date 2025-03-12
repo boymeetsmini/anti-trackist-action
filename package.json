@@ -7,7 +7,7 @@
     "discord.js": "^14.15.3"
   },
   "scripts": {
-    "test": "mocha",
+    "test": "mocha \"./build/test/**/*.spec.js\"",
     "build": "tsc"
   },
   "author": "Ken C (boymeetsmini)",
