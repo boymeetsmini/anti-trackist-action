@@ -7,15 +7,20 @@
     "discord.js": "^14.15.3"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha",
+    "build": "tsc"
   },
   "author": "Ken C (boymeetsmini)",
   "license": "ISC",
   "devDependencies": {
-    "typescript": "^5.5.4",
+    "@types/chai": "^5.2.0",
+    "@types/mocha": "^10.0.10",
+    "chai": "^5.2.0",
+    "csv-parse": "^5.6.0",
     "discord.js": "^14.18.0",
-    "url": "^0.11.4",
+    "mocha": "^11.1.0",
     "querystring": "^0.2.1",
-    "csv-parse":"^5.6.0"
+    "typescript": "^5.5.4",
+    "url": "^0.11.4"
   }
 }
