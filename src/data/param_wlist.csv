@@ -1,10 +1,13 @@
 domain,param
 youtube,v
 youtube,t
+youtube,list
 youtu.be,v
 youtu.be,t
+youtu.be,list
 google,q
 nexusmods,tab
 nexusmods,file_id
 duckduckgo,q
 discordapp,*
+twitch,t
