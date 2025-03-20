@@ -1,5 +1,6 @@
-import { Client, GatewayIntentBits, Message, PartialMessage } from 'discord.js';
-import { cleanUrl, replaceUrls } from './src/helpers';
+import 'dotenv/config';
+import { Client, GatewayIntentBits, Message, PartialMessage, GuildTextBasedChannel } from 'discord.js';
+import { cleanUrl, pullWhitelist, replaceUrls } from './src/helpers';
 
 async function cleanupMessage(message: Message) {
     // Ignore messages from the bot itself
@@ -11,36 +12,42 @@ async function cleanupMessage(message: Message) {
     if (urls && urls.length === 0) return;
 
     // Clean the URLs
-    const cleanedUrls = urls?.map(async (url) => await cleanUrl(url));
+    const cleanedUrls = urls?.map((url) => cleanUrl(url));
 
     // Replace URLs and edit message contents
-    message.edit(replaceUrls(message.content, urls, cleanedUrls));
+    const cleanedMsg = replaceUrls(message.content, urls, cleanedUrls)
+    await message.delete();
+    await (message.channel as GuildTextBasedChannel).send(cleanedMsg);
 }
 
 // Create a new Discord client with the necessary intents
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMembers,
         GatewayIntentBits.GuildMessages,
         GatewayIntentBits.MessageContent,
     ],
 });
 
 // Event: When the bot is ready
-client.once('ready', () => {
+client.once('ready', async () => {
     console.log(`Logged in as ${client.user?.tag}`);
+    await pullWhitelist();
 });
 
 // Event: When a message is created
 client.on('messageCreate', async (message: Message) => {
+    console.log(`Cleaning up new message: ${message.content}`);
     await cleanupMessage(message);
 });
 
 // Event: When a message is edited/updated
 client.on('messageUpdate', async (oldMessage: Message | PartialMessage, newMessage: Message) => {
+    console.log(`Cleaning up edited message: ${newMessage.content}`);
     await cleanupMessage(newMessage);
 });
 
 // Log in to Discord with your bot token
 // TODO store token in launch config
-client.login('YOUR_DISCORD_BOT_TOKEN');
+client.login(process.env.DISCORD_TOKEN);

@@ -3,10 +3,9 @@ import fs from 'fs';
 import { parse } from 'csv-parse';
 
 const WHITELIST_FILE = 'src/data/param_wlist.csv';
+let wList: any[] = [];
 
-// Function to find all whitelisted params for a domain match
-async function whitelistMatches(domain: string): Promise<string[]> {
-    const wList: any[] = [];
+export async function pullWhitelist(): Promise<void> {
     const parser = fs.createReadStream(WHITELIST_FILE)
         .pipe(parse({
             delimiter: ",",
@@ -15,18 +14,21 @@ async function whitelistMatches(domain: string): Promise<string[]> {
     for await (const record of parser) {
         wList.push(record);
     }
+}
 
+// Function to find all whitelisted params for a domain match
+function whitelistMatches(domain: string): string[] {
     return wList.filter((listItem) => listItem[0] === domain).map((listItem) => listItem[1]);
 }
 
 // Function to clean URLs by removing tracking parameters
-export async function cleanUrl(url: string): Promise<string> {
+export function cleanUrl(url: string): string {
     // extract domain from URL to find whitelisted params (filter out 'www')
     const parsedUrl = new URL(url);
     const parsedDomain: string = parsedUrl.hostname.split('.').filter((x) => x !== 'www')[0];
 
     // Find all whitelisted params for given URL's domain
-    const parsedWl = await whitelistMatches(parsedDomain);
+    const parsedWl = whitelistMatches(parsedDomain);
 
     // Handle wildcard (*) (skip parameter delete if * present)
     if (parsedWl.indexOf('*') === -1) {
@@ -42,6 +44,7 @@ export async function cleanUrl(url: string): Promise<string> {
         parsedUrl.search = searchParams.toString();
     }
 
+    console.log(`Cleaned URL: ${parsedUrl.toString()}`);
     return parsedUrl.toString();
 }
 
