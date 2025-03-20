@@ -4,7 +4,7 @@
   "description": "A Discord bot that cleans up URLs posted in Discord messages.",
   "main": "index.js",
   "dependencies": {
-    "discord.js": "^14.15.3",
+    "discord.js": "^14.18.0",
     "lodash": "^4.17.21"
   },
   "scripts": {
