@@ -28,12 +28,17 @@ describe('Clean URL Tests', function () {
                 testName: '1 HTTP URL without tracking',
                 inputUrl: 'http://www.google.com/',
                 expectedUrl: 'http://www.google.com/',
+            },
+            {
+                testName: 'TikTok URL',
+                inputUrl: 'https://www.tiktok.com/@moreperfectunion/video/7483541163362848030?sender_device=pc',
+                expectedUrl: 'https://www.tiktok.com/@moreperfectunion/video/7483541163362848030'
             }
         ];
 
         each(testHash, function (test) {
-            it(test.testName, async function () {
-                expect(await cleanUrl(test.inputUrl)).to.eq(test.expectedUrl);
+            it(test.testName, function () {
+                expect(cleanUrl(test.inputUrl)).to.eq(test.expectedUrl);
             });
         });
     });
