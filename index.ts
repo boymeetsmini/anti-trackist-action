@@ -43,10 +43,10 @@ client.on('messageCreate', async (message: Message) => {
 });
 
 // Event: When a message is edited/updated
-client.on('messageUpdate', async (oldMessage: Message | PartialMessage, newMessage: Message) => {
-    console.log(`Cleaning up edited message: ${newMessage.content}`);
-    await cleanupMessage(newMessage);
-});
+// client.on('messageUpdate', async (oldMessage: Message | PartialMessage, newMessage: Message) => {
+//     console.log(`Cleaning up edited message: ${newMessage.content}`);
+//     await cleanupMessage(newMessage);
+// });
 
 // Log in to Discord with your bot token
 // TODO store token in launch config
