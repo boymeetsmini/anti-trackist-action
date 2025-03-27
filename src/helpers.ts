@@ -22,7 +22,7 @@ function whitelistMatches(domain: string): string[] {
 }
 
 // Function to clean URLs by removing tracking parameters
-export function cleanUrl(url: string): string {
+export function checkUrlForTracking(url: string): boolean {
     // extract domain from URL to find whitelisted params (filter out 'www')
     const parsedUrl = new URL(url);
     const parsedDomain: string = parsedUrl.hostname.split('.').filter((x) => x !== 'www')[0];
@@ -37,15 +37,11 @@ export function cleanUrl(url: string): string {
         for (const key of searchParams.keys()) {
             // delete any keys not in the whitelist for specified domain
             if (parsedWl.indexOf(key) === -1) {
-                searchParams.delete(key);
+                return true;
             }
         }
-        // Rebuild the URL without tracking parameters
-        parsedUrl.search = searchParams.toString();
     }
-
-    console.log(`Cleaned URL: ${parsedUrl.toString()}`);
-    return parsedUrl.toString();
+    return false;
 }
 
 // Function to replace all URLs with cleaned ones
