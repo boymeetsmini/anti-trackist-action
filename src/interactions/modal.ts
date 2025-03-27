@@ -1,6 +1,6 @@
 import { ActionRowBuilder, ModalActionRowComponentBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from 'discord.js';
 
-const PLACEHOLDER_TXT = 'Your message contains URLs with tracking info.\nClick "Submit" to clean up the links, or click "Cancel" to skip.';
+const PLACEHOLDER_TXT = 'Your message contains URLs with tracking info. Make sure to clean these up - thanks!';
 
 export function cleanupModal(): ModalBuilder {
     // Create the modal

@@ -1,8 +1,8 @@
 import 'dotenv/config';
-import { Client, GatewayIntentBits, Message, Events } from 'discord.js';
+import { Client, GatewayIntentBits, Message, ButtonInteraction } from 'discord.js';
 import { checkUrlForTracking, pullWhitelist } from './src/helpers';
 import { cleanupModal } from './src/interactions/modal'
-import EventEmitter from 'node:events';
+// import EventEmitter from 'node:events';
 import _ from 'lodash';
 
 function messageContainsTracking(message: Message): boolean {
@@ -41,26 +41,26 @@ client.once('ready', async () => {
     await pullWhitelist(); // pull whitelist on bot initialization
 });
 
-// Event: When a message is created
+// Event: When a new message is created
 client.on('messageCreate', async (message) => {
     console.log(`Cleaning up new message: ${message.content}`); // TODO Remove after testing!
 
     // If message contains tracking, trigger interactionCreate event to display warning modal.
-    const emitter = new EventEmitter();
-    if (messageContainsTracking(message)) emitter.emit('interactionCreate');
+    // TODO fake an interaction to trigger interaction event    
+    if (messageContainsTracking(message)) client.emit('interactionCreate', new ButtonInteraction());
 });
 
-// TODO messageUpdate
-client.on('messageUpdate', async (oldMessage, newMessage) => {
-    console.log(`Message being updated: ${oldMessage.content}\nNew Message: ${newMessage.content}`); // TODO Remove after testing!
+// TODO Event: When an existing message is updated
+// client.on('messageUpdate', async (oldMessage, newMessage) => {
+//     console.log(`Message being updated: ${oldMessage.content}\nNew Message: ${newMessage.content}`); // TODO Remove after testing!
 
-    // If message contains tracking, trigger interactionCreate event to display warning modal.
-    const emitter = new EventEmitter();
-    if (messageContainsTracking(newMessage)) emitter.emit('interactionCreate');
-});
+//     // If message contains tracking, trigger interactionCreate event to display warning modal.
+//     if (messageContainsTracking(newMessage)) client.emit('interactionCreate', interaction);
+// });
 
 // display popup modal if triggered by messageCreate event
 client.on('interactionCreate', async (interaction) => {
+    console.log('I\'m triggered!');
     if (interaction.isChatInputCommand()) return;
     cleanupModal();
 })
